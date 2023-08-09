@@ -28,7 +28,6 @@ include 'conn.php';
     <style>
         * {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            background-color: #FBEAEB;
         }
 
         #main {
@@ -36,6 +35,8 @@ include 'conn.php';
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            background-color: #FBEAEB;
+            height: 100vh;
         }
 
         #alert_div {
@@ -44,11 +45,34 @@ include 'conn.php';
         }
 
         form {
-            border-radius: 1rem;
-            margin: 6rem;
-            background-color: #2F3C7E;
+            margin: 1rem;
             padding: 2rem;
             color: #FBEAEB;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wrapper {
+            background-color: #2F3C7E;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 6px 8px 13px darkblue;
+            gap: 1rem;
+        }
+
+
+
+        select {
+            margin: 11px;
+        }
+
+        span {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 1rem;
         }
     </style>
 </head>
@@ -56,51 +80,91 @@ include 'conn.php';
 <body>
 
     <div id="main">
-
         <?php
         if (isset($_SESSION['logged_in'])) {
             ?>
-            <div class="alert alert-success alert-dismissible fade show" id="alert_div" role="alert">
-                <span class="px-5">
-                    <strong><i class="bi bi-check-circle px-2"></i></strong> Logged In Successfully</span>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            <div class="alert alert-success alert-dismissible fade show  d-flex flex-row align-items-center justify-content-center"
+                id="alert_div" role="alert">
+                <span class="px-5 d-flex flex-row align-items-center justify-content-center mt-1">
+                    <strong><i
+                            class="bi bi-check-circle px-2 d-flex flex-row align-items-center justify-content-center mt-1"></i></strong>
+                    Logged In Successfully
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span class="mt-0" aria-hidden="true">&times;</span>
+                    </button></span>
             </div>
 
             <?Php
         }
         unset($_SESSION['logged_in']); ?>
 
-        <h1> Course Enrollment Form</h1>
-        <form action="" method="Post">
-            Roll no : <select name="roll" id="roll_select">
-                <option value="Roll" disabled selected>Select your roll no</option>
+        <div class="wrapper d-flex flex-column align-items-center justify-content-center px-5">
+            <h2 class="text-light text-center text-uppercase"> Course Enrollment Form</h2>
+            <form action="log.php" method="post">
                 <?php
-                $query = "SELECT roll FROM student_data";
+
+
+                $query = "SELECT * FROM student_data where `roll`=$_SESSION[roll]";
                 $rquery = mysqli_query($conn, $query);
-                if (mysqli_num_rows($rquery) > 0) {
-                    foreach ($rquery as $result) {
+                foreach ($rquery as $sdata) {
+                    $sname = $sdata['name'];
+                    $semail = $sdata['email'];
+                }
+                ?>
+                <span>
+                    Student's Name : <input type="text" name="name" value="<?Php echo $sname ?>" readonly>
+
+                </span>
+                <span>
+                    Student's Email :
+                    <input type="text" name="email" value="<?Php echo $semail ?>" readonly><br><br>
+                </span>
+                <span>
+                    Courses Available : <select name="course" id="sel">
+                        <option value="none" disabled selected>Select Course</option>
+                        <?Php
+                        $cquery = "SELECT * FROM course";
+                        $rcquery = mysqli_query($conn, $cquery);
+                        foreach ($rcquery as $cdata) {
+                            $cname = $cdata['course_n'];
+                            $cfees = $cdata['fees'];
+                            echo "<option name='opt' id='copt' value='$cname'>$cname</option>";
+                        }
                         ?>
-                        <option value='<?Php echo $result['roll'] ?>' name="roll">
-                            <?Php echo $result['roll'] ?>
-                        </option>
-                        <?php
-                    }
-                } ?>
-            </select>
-            <input type="submit" name="get_data">
-            <?php
-            if (isset($_POST['get_data'])) {
-                $query = "SELECT * FROM student_data where `roll`=$_POST[roll]";
-                $rquery = mysqli_query($conn, $query);
-                print_r($rquery);
-            }
-            ?>
-        </form>
+                    </select>
+                    Fees for the selected Course :<input type="text" name="fees" id="fees" placeholder="Fees">
 
+                </span>
+                <button type="submit" name="payment" class="btn btn-outline-light mt-3 ">Proceed to payment</button>
+                <?Php
+
+
+
+                ?>
+            </form>
+            <script>
+                $(document).ready(function () {
+                    $('#sel').change(function () {
+                        var crs = $('#sel').val();
+                        if (crs !== "none") {
+                            $.ajax({
+                                url: '../Php/log.php',
+                                method: 'POST',
+                                data: { course: crs },
+                                success: function (res) {
+                                    $('#fees').val(res);
+                                }
+                            })
+
+                        }
+                    })
+                })
+            </script>
+        </div>
     </div>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+        integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 
 </html>

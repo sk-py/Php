@@ -37,10 +37,45 @@ if (isset($_POST['log_btn'])) {
     $response = $query->get_result()->fetch_all(MYSQLI_ASSOC);
 
     if ($response == true) {
+        foreach ($response as $resp) {
+            echo $_SESSION['roll'] = $resp['roll'];
+        }
         $_SESSION['logged_in'] = "Logged In Succesfully";
         header("Location:../Php/home.php");
     } else {
         echo "Wrong Password";
     }
 }
+
+if (isset($_POST['course'])) {
+    $chq_query = "SELECT fees FROM course WHERE course_n='$_POST[course]'";
+    $rquery = mysqli_query($conn, $chq_query);
+    foreach ($rquery as $respons) {
+        echo $respons['fees'];
+    }
+}
+if (isset($_POST['payment'])) {
+    $query = "INSERT INTO `enrolled_student`(`roll`, `name`, `email`, `course`, `total_fee`,`rem_fee`) VALUES ('$_SESSION[roll]','$_POST[name]','$_POST[email]','$_POST[course]','$_POST[fees]','$_POST[fees]')";
+
+    $rquery = mysqli_query($conn, $query);
+
+    if ($rquery) {
+        header('location:../Php/payment.php');
+    } else {
+        echo "Error in cdata";
+    }
+}
+if (isset($_POST['txn_btn'])) {
+    $query = "UPDATE `enrolled_student` SET `paid_fees`='$_POST[paidfee]',`rem_fee`='$_POST[remfee]' WHERE roll='$_SESSION[roll]'";
+
+    $rquery = mysqli_query($conn, $query);
+
+    if ($rquery) {
+        $_SESSION['txn'] = true;
+        header('location:../Php/main.php');
+    } else {
+        echo "Transaction Failed";
+    }
+}
+
 ?>
