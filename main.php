@@ -43,6 +43,7 @@ session_start();
         <?Php
     }
     unset($_SESSION['txn']); ?>
+    <nav>Navbar</nav>
 </body>
 
 </html>
