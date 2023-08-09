@@ -60,7 +60,7 @@ include 'conn.php'; ?>
             var pam = document.getElementById("pamount")
             var sm = document.getElementById("warn");
             pend.addEventListener("input", function (e) {
-                if (parseInt(e.target.value) > 50000) {
+                if (parseInt(e.target.value) > parseInt(main.value)) {
                     sm.innerHTML = "You can't Pay more than " + main.value;
 
                     document.getElementById("hbtn").disabled = true;
