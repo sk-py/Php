@@ -8,7 +8,7 @@ if (isset($_POST['reg_btn'])) {
     $email = $_POST['semail'];
     $password = $_POST['password'];
 
-    $chq_query = "SELECT * FROM `student_data` WHERE email='$email' OR roll='$roll'";
+    $chq_query = "SELECT email,roll FROM `student_data` WHERE email='$email' OR roll='$roll'";
     $rquery = mysqli_query($conn, $chq_query);
 
     if (mysqli_num_rows($rquery) > 0) {
@@ -19,7 +19,7 @@ if (isset($_POST['reg_btn'])) {
         $rquery = mysqli_query($conn, $query);
 
         if ($rquery) {
-            header("Location:../student/login.php");
+            header("Location:../Php/login.php");
         } else {
             echo "Unknow Error Occurred While Uploading Data Into Database";
         }
@@ -38,7 +38,7 @@ if (isset($_POST['log_btn'])) {
 
     if ($response == true) {
         $_SESSION['logged_in'] = "Logged In Succesfully";
-        header("Location:../student/home.php");
+        header("Location:../Php/home.php");
     } else {
         echo "Wrong Password";
     }
