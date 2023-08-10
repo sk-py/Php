@@ -39,6 +39,8 @@ if (isset($_POST['log_btn'])) {
     if ($response == true) {
         foreach ($response as $resp) {
             echo $_SESSION['roll'] = $resp['roll'];
+            $_SESSION['sname'] = $resp['name'];
+            $_SESSION['semail'] = $resp['email'];
         }
         $_SESSION['logged_in'] = "Logged In Succesfully";
         header("Location:../Php/home.php");
@@ -55,16 +57,24 @@ if (isset($_POST['course'])) {
     }
 }
 if (isset($_POST['payment'])) {
-    $query = "INSERT INTO `enrolled_student`(`roll`, `name`, `email`, `course`, `total_fee`,`rem_fee`) VALUES ('$_SESSION[roll]','$_POST[name]','$_POST[email]','$_POST[course]','$_POST[fees]','$_POST[fees]')";
-
-    $rquery = mysqli_query($conn, $query);
-
-    if ($rquery) {
+    $chq_query = "SELECT roll,email FROM enrolled_student WHERE email='$_POST[email]'";
+    $cquery = mysqli_query($conn, $chq_query);
+    if (mysqli_num_rows($cquery) > 0) {
         header('location:../Php/payment.php');
+        exit();
     } else {
-        echo "Error in cdata";
+        $query = "INSERT INTO `enrolled_student`(`roll`, `name`, `email`, `course`, `total_fee`,`rem_fee`) VALUES ('$_SESSION[roll]','$_POST[name]','$_POST[email]','$_POST[course]','$_POST[fees]','$_POST[fees]')";
+        $rquery = mysqli_query($conn, $query);
+
+        if ($rquery) {
+            header('location:../Php/payment.php');
+        } else {
+            echo "Error in cdata";
+        }
+
     }
 }
+
 if (isset($_POST['txn_btn'])) {
     $query = "UPDATE `enrolled_student` SET `paid_fees`='$_POST[paidfee]',`rem_fee`='$_POST[remfee]' WHERE roll='$_SESSION[roll]'";
 

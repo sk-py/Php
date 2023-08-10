@@ -23,6 +23,22 @@ session_start();
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+    <style>
+        * {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background: #FBEAEB;
+        }
+
+        nav {
+            background-color: #2F3C7E;
+            color: white;
+            font-size: 1.5rem;
+            padding: 0.4rem;
+        }
+    </style>
 </head>
 
 <body>
@@ -43,7 +59,15 @@ session_start();
         <?Php
     }
     unset($_SESSION['txn']); ?>
-    <nav>Navbar</nav>
+    <nav class="container d-flex align-items-center justify-content-between"><span class="nav">Student
+            Dashboard</span><span class="nav"><a href="login.php"><button class="btn">Logout
+                </button></span></a>
+    </nav>
+    <i class="bi bi-person-circle"></i>
+    <?Php
+    echo $_SESSION['sname'];
+    ?>
+
 </body>
 
 </html>
